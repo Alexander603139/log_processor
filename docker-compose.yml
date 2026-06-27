@@ -42,16 +42,16 @@ services:
     container_name: log-kafka
     environment:
       # KRaft режим (без ZooKeeper)
-      KAFKA_ENABLE_KRAFT: yes
-      KAFKA_CFG_PROCESS_ROLES: broker,controller
-      KAFKA_CFG_CONTROLLER_LISTENER_NAMES: CONTROLLER
-      KAFKA_CFG_LISTENERS: PLAINTEXT://:9092,CONTROLLER://:9093
+      KAFKA_ENABLE_KRAFT: "yes"
+      KAFKA_CFG_PROCESS_ROLES: "broker,controller"
+      KAFKA_CFG_CONTROLLER_LISTENER_NAMES: "CONTROLLER"
+      KAFKA_CFG_LISTENERS: "PLAINTEXT://:9092,CONTROLLER://:9093"
       # Адрес для внешних подключений (ваше приложение будет подключаться по localhost)
-      KAFKA_CFG_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092   # внутри сети
-      KAFKA_CFG_CONTROLLER_QUORUM_VOTERS: 1@kafka:9093
-      KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE: true
-      KAFKA_BROKER_ID: 1
-      KAFKA_CFG_NODE_ID: 1
+      KAFKA_CFG_ADVERTISED_LISTENERS: "PLAINTEXT://kafka:9092" # внутри сети
+      KAFKA_CFG_CONTROLLER_QUORUM_VOTERS: "1@kafka:9093"
+      KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE: "true"
+      KAFKA_BROKER_ID: "1"
+      KAFKA_CFG_NODE_ID: "1"
       # Увеличиваем лимиты для стабильности
       KAFKA_HEAP_OPTS: "-Xmx256m -Xms128m"
     ports:
