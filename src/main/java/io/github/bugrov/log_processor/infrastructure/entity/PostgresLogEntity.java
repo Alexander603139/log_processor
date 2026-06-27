@@ -33,6 +33,5 @@ public class PostgresLogEntity {
 
     @Column(name = "timestamp", nullable = false)
     private Instant timestamp;
-
     // можно добавить поле severity или is_suspicious для быстрых выборок
 }
