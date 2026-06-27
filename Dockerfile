@@ -1,4 +1,4 @@
-FROM eclipse-temurin:21-jdk-slim AS build
+FROM bellsoft/liberica-openjdk-debian:21 AS build
 WORKDIR /app
 COPY build.gradle settings.gradle ./
 COPY gradle gradle
@@ -8,7 +8,7 @@ RUN ./gradlew dependencies --no-daemon || true
 COPY src src
 RUN ./gradlew build -x test --no-daemon
 
-FROM eclipse-temurin:21-jdk-slim
+FROM bellsoft/liberica-openjdk-debian:21
 WORKDIR /app
 COPY --from=build /app/build/libs/*.jar app.jar
 EXPOSE 8080
