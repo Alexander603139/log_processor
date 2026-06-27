@@ -9,7 +9,7 @@ services:
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: admin
     ports:
-      - "5432:5432"
+      - "5432:5432"        # свободен
     volumes:
       - postgres_data:/var/lib/postgresql/data
     restart: unless-stopped
@@ -27,7 +27,7 @@ services:
       MONGO_INITDB_ROOT_USERNAME: admin
       MONGO_INITDB_ROOT_PASSWORD: admin
     ports:
-      - "27017:27017"
+      - "27017:27017"      # свободен
     volumes:
       - mongo_data:/data/db
     restart: unless-stopped
@@ -47,15 +47,15 @@ services:
       KAFKA_CFG_CONTROLLER_LISTENER_NAMES: CONTROLLER
       KAFKA_CFG_LISTENERS: PLAINTEXT://:9092,CONTROLLER://:9093
       # Адрес для внешних подключений (ваше приложение будет подключаться по localhost)
-      KAFKA_CFG_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
-      KAFKA_CFG_CONTROLLER_QUORUM_VOTERS: 1@localhost:9093
+      KAFKA_CFG_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092   # внутри сети
+      KAFKA_CFG_CONTROLLER_QUORUM_VOTERS: 1@kafka:9093
       KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE: true
       KAFKA_BROKER_ID: 1
       KAFKA_CFG_NODE_ID: 1
       # Увеличиваем лимиты для стабильности
       KAFKA_HEAP_OPTS: "-Xmx256m -Xms128m"
     ports:
-      - "9092:9092"
+      - "9092:9092"        # свободен
     volumes:
       - kafka_data:/bitnami/kafka
     restart: unless-stopped
@@ -64,6 +64,30 @@ services:
       interval: 15s
       timeout: 10s
       retries: 10
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: log-processor-app
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/logdb
+      SPRING_DATASOURCE_USERNAME: admin
+      SPRING_DATASOURCE_PASSWORD: admin
+      SPRING_DATA_MONGODB_URI: mongodb://admin:admin@mongodb:27017/logdb
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      APP_KAFKA_TOPIC_RAW_EVENTS: raw-events
+      APP_KAFKA_CONSUMER_GROUP_ID: log-processor-group
+    ports:
+      - "8081:8080"        # внешний порт 8081, внутренний 8080
+    depends_on:
+      postgres:
+        condition: service_healthy
+      mongodb:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+    restart: unless-stopped
 
 volumes:
   postgres_data:
