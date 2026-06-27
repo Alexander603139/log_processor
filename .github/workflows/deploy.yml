@@ -57,7 +57,7 @@ jobs:
           key: ${{ secrets.TIMEWEB_SSH_KEY }}
           script: |
             cd /opt/log-processor
-            docker compose down
-            docker compose pull
-            docker compose up -d --build
+            docker-compose down
+            docker-compose pull
+            docker-compose up -d --build
             docker image prune -f
