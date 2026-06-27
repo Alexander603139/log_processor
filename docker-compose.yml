@@ -55,7 +55,7 @@ services:
       # Увеличиваем лимиты для стабильности
       KAFKA_HEAP_OPTS: "-Xmx256m -Xms128m"
     ports:
-      - "9092:9092"        # свободен
+      - "9092:9092"       # свободен
     volumes:
       - kafka_data:/bitnami/kafka
     restart: unless-stopped
