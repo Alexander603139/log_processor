@@ -70,6 +70,7 @@ services:
       context: .
       dockerfile: Dockerfile
     container_name: log-processor-app
+    command: sleep infinity
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/logdb
       SPRING_DATASOURCE_USERNAME: admin
