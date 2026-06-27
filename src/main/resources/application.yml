@@ -3,9 +3,6 @@ spring:
     name: log-processor
 
   datasource:
-    url: jdbc:postgresql://localhost:5432/logdb
-    username: admin
-    password: admin
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
@@ -22,17 +19,17 @@ spring:
 
   data:
     mongodb:
-      uri: mongodb://localhost:27017/logdb
+    # uri будет взят из SPRING_DATA_MONGODB_URI
 
   kafka:
-    bootstrap-servers: localhost:9092
+    # bootstrap-servers будет взят из SPRING_KAFKA_BOOTSTRAP_SERVERS
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
       properties:
         spring.json.type.mapping: event:io.github.bugrov.log_processor.api.dto.LogEventMessage
     consumer:
-      group-id: log-processor-group
+      group-id: ${APP_KAFKA_CONSUMER_GROUP_ID:log-processor-group}
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
       properties:
@@ -43,9 +40,9 @@ spring:
 app:
   kafka:
     topic:
-      raw-events: raw-events
+      raw-events: ${APP_KAFKA_TOPIC_RAW_EVENTS:raw-events}
     consumer:
-      group-id: log-processor-group
+      group-id: ${APP_KAFKA_CONSUMER_GROUP_ID:log-processor-group}
 
 # Actuator (тумблер)
 management:
