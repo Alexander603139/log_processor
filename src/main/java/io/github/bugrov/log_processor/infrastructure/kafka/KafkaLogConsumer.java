@@ -40,6 +40,7 @@ public class KafkaLogConsumer {
         }
 
         // Сохраняем в обе БД через порт
+        log.info("Calling repository.save for event: {}", eventLog);
         repository.save(eventLog);
     }
 }

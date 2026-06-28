@@ -44,7 +44,9 @@ public class CompositeEventLogRepository implements EventLogRepositoryPort {
                 .timestamp(eventLog.getTimestamp())
                 .build();
         try {
+            log.info("Saving to MongoDB: {}", mongoDoc);
             mongoRepo.save(mongoDoc);
+            log.info("Saved to MongoDB successfully");
         } catch (Exception e) {
             log.error("Failed to save to MongoDB: {}", e.getMessage());
         }
