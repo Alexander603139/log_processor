@@ -81,13 +81,13 @@ services:
       APP_KAFKA_CONSUMER_GROUP_ID: log-processor-group
     ports:
       - "8081:8080"        # внешний порт 8081, внутренний 8080
-    depends_on:
-      postgres:
-        condition: service_healthy
-      mongodb:
-        condition: service_healthy
-      kafka:
-        condition: service_healthy
+#    depends_on:
+#      postgres:
+#        condition: service_healthy
+#      mongodb:
+#        condition: service_healthy
+#      kafka:
+#        condition: service_healthy
     restart: unless-stopped
 
 volumes:
