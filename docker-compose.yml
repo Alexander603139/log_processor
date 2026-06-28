@@ -76,7 +76,7 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/logdb
       SPRING_DATASOURCE_USERNAME: admin
       SPRING_DATASOURCE_PASSWORD: admin
-      SPRING_DATA_MONGODB_URI: mongodb://admin:admin@mongodb:27017/logdb
+      SPRING_DATA_MONGODB_URI: mongodb://admin:admin@mongodb:27017/logdb?authSource=admin
       SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
       APP_KAFKA_TOPIC_RAW_EVENTS: raw-events
       APP_KAFKA_CONSUMER_GROUP_ID: log-processor-group
