@@ -27,7 +27,7 @@ spring:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
       properties:
-        spring.json.type.mapping: event:io.github.bugrov.log_processor.api.dto.LogEventMessage
+        spring.json.type.mapping: event:io.github.bugrov.log_processor.api.dto.LogEventMessage, command:io.github.bugrov.log_processor.api.dto.CommandMessage
     consumer:
       group-id: ${APP_KAFKA_CONSUMER_GROUP_ID:log-processor-group}
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
@@ -41,6 +41,8 @@ app:
   kafka:
     topic:
       raw-events: ${APP_KAFKA_TOPIC_RAW_EVENTS:raw-events}
+      # имя топика Kafka, в который приложение будет отправлять команды (например, "BLOCK_IP", "ALERT"), когда правило срабатывает.
+      outgoing-commands: outgoing-commands
     consumer:
       group-id: ${APP_KAFKA_CONSUMER_GROUP_ID:log-processor-group}
 
