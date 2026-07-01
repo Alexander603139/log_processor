@@ -82,5 +82,6 @@ public class KafkaLogConsumer {
         // 5. Сохраняем в БД
         log.info("Calling repository.save for event: {}", eventLog);
         repository.save(eventLog);
+        log.info("Loaded {} rules: {}", rules.size(), rules);
     }
 }
