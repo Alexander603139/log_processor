@@ -18,6 +18,7 @@ import org.springframework.stereotype.Component;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -55,33 +56,37 @@ public class KafkaLogConsumer {
                                 .name(entity.getName())
                                 .description(entity.getDescription())
                                 .conditionType(entity.getConditionType())
-                                .conditionConfig(entity.getConditionConfig() == null ? null : new ObjectMapper().readTree(entity.getConditionConfig())).action(entity.getAction())
+                                .conditionConfig(entity.getConditionConfig() == null ? null : new ObjectMapper().readTree(entity.getConditionConfig()))
+                                .action(entity.getAction())
                                 .enabled(entity.getEnabled())
                                 .build();
                     } catch (JsonProcessingException e) {
-                        e.printStackTrace();
+                        log.error("Failed to parse conditionConfig for rule {}: {}", entity.getId(), entity.getConditionConfig(), e);
+                        return null;
                     }
-                    return null;
                 })
+                .filter(Objects::nonNull)
                 .collect(Collectors.toList());
+
+        log.info("Loaded {} active rules: {}", rules.size(), rules);
 
         // 3. Применяем правила
         boolean isAlert = ruleEngine.evaluate(eventLog, rules);
 
-        // 4. Если тревога – отправляем команду (сейчас лог, позже KafkaProducer)
+        // 4. Если тревога – отправляем команду
         if (isAlert) {
             CommandMessage command = CommandMessage.builder()
                     .ipAddress(eventLog.getIpAddress())
-                    .action("BLOCK")  // или из правила
+                    .action("BLOCK")
                     .reason("Suspicious activity detected")
                     .ruleId(rules.stream().filter(Rule::isEnabled).findFirst().map(Rule::getId).orElse(null))
                     .build();
             commandProducer.sendCommand(command);
             log.warn("ALERT triggered for event: {}", eventLog);
         }
+
         // 5. Сохраняем в БД
         log.info("Calling repository.save for event: {}", eventLog);
         repository.save(eventLog);
-        log.info("Loaded {} rules: {}", rules.size(), rules);
     }
 }
