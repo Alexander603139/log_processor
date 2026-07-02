@@ -22,9 +22,9 @@ services:
       resources:
         limits:
           cpus: '0.5'
-          memory: 512M
+          memory: "512M"
         reservations:
-          memory: 256M
+          memory: "256M"
 
   mongodb:
     image: mongo:7-jammy
@@ -47,7 +47,7 @@ services:
       resources:
         limits:
           cpus: '0.5'
-          memory: 512M
+          memory: "512M"
   kafka:
     image: bitnamilegacy/kafka:4.0.0-debian-12-r10
     container_name: log-kafka
@@ -82,7 +82,7 @@ services:
       resources:
         limits:
           cpus: '0.7'
-          memory: 768
+          memory: "768"
   app:
     build:
       context: .
@@ -113,7 +113,7 @@ services:
       resources:
         limits:
           cpus: '0.8'
-          memory: 512M
+          memory: "512M"
 
 volumes:
   postgres_data:
