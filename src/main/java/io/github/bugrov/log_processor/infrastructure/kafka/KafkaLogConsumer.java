@@ -72,6 +72,7 @@ public class KafkaLogConsumer {
 
         // 3. Применяем правила
         boolean isAlert = ruleEngine.evaluate(eventLog, rules);
+        log.info("=== isAlert: {}", isAlert);
 
         // 4. Если тревога – отправляем команду
         if (isAlert) {
