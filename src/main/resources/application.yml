@@ -62,3 +62,10 @@ logging:
     io.github.bugrov: INFO   # было DEBUG
     org.springframework.kafka: WARN
     org.mongodb.driver: WARN
+
+synthetic:
+  generator:
+    enabled: ${SYNTHETIC_GENERATOR_ENABLED:false}
+    background-interval-ms: 7000
+    anomaly-interval-ms: 120000
+    anomaly-burst-size: 10
