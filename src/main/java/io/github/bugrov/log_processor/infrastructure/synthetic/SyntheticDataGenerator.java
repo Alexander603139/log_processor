@@ -28,7 +28,7 @@ public class SyntheticDataGenerator {
     public void generateBackgroundEvent() {
         LogEventMessage event = buildRandomEvent(false);
         kafkaProducer.sendEvent(event);
-        log.debug("Generated background event: {}", event);
+        log.info("Generated background event: {}", event);
     }
 
     // Аномалия – всплеск событий
