@@ -14,10 +14,17 @@ services:
       - postgres_data:/var/lib/postgresql/data
     restart: unless-stopped
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U admin -d logdb"]
+      test: [ "CMD-SHELL", "pg_isready -U admin -d logdb" ]
       interval: 10s
       timeout: 5s
       retries: 5
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
+        reservations:
+          memory: 256M
 
   mongodb:
     image: mongo:7-jammy
@@ -32,11 +39,15 @@ services:
       - mongo_data:/data/db
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      test: [ "CMD", "mongosh", "--eval", "db.adminCommand('ping')" ]
       interval: 10s
       timeout: 5s
       retries: 5
-
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
   kafka:
     image: bitnamilegacy/kafka:4.0.0-debian-12-r10
     container_name: log-kafka
@@ -54,23 +65,30 @@ services:
       KAFKA_CFG_NODE_ID: "1"
       # Увеличиваем лимиты для стабильности
       KAFKA_HEAP_OPTS: "-Xmx256m -Xms128m"
+      KAFKA_LOG_RETENTION_HOURS: 24
+      KAFKA_LOG_RETENTION_BYTES: 1073741824   # 1 ГБ
+      KAFKA_LOG_CLEANUP_POLICY: delete
     ports:
       - "9092:9092"       # свободен
     volumes:
       - kafka_data:/bitnami/kafka
     restart: unless-stopped
     healthcheck:
-      test: ["CMD-SHELL", "kafka-broker-api-versions --bootstrap-server localhost:9092"]
+      test: [ "CMD-SHELL", "kafka-broker-api-versions --bootstrap-server localhost:9092" ]
       interval: 15s
       timeout: 10s
       retries: 10
-
+    deploy:
+      resources:
+        limits:
+          cpus: '0.7'
+          memory: 768
   app:
     build:
       context: .
       dockerfile: Dockerfile
     container_name: log-processor-app
-#    command: sleep infinity
+    #    command: sleep infinity
     environment:
       SERVER_ADDRESS: 0.0.0.0
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/logdb
@@ -83,14 +101,19 @@ services:
       SPRING_JPA_HIBERNATE_DDL_AUTO: update
     ports:
       - "8081:8080"        # внешний порт 8081, внутренний 8080
-#    depends_on:
-#      postgres:
-#        condition: service_healthy
-#      mongodb:
-#        condition: service_healthy
-#      kafka:
-#        condition: service_healthy
+    #    depends_on:
+    #      postgres:
+    #        condition: service_healthy
+    #      mongodb:
+    #        condition: service_healthy
+    #      kafka:
+    #        condition: service_healthy
     restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: '0.8'
+          memory: 512M
 
 volumes:
   postgres_data:

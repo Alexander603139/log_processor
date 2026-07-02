@@ -59,5 +59,6 @@ management:
 # Логирование
 logging:
   level:
-    io.github.bugrov: DEBUG
-    org.springframework.kafka: INFO
+    io.github.bugrov: INFO   # было DEBUG
+    org.springframework.kafka: WARN
+    org.mongodb.driver: WARN
