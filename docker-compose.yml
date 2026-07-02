@@ -84,7 +84,7 @@ services:
       APP_KAFKA_TOPIC_RAW_EVENTS: raw-events
       APP_KAFKA_CONSUMER_GROUP_ID: log-processor-group
       SPRING_JPA_HIBERNATE_DDL_AUTO: update
-      SYNTHETIC_GENERATOR_ENABLED: true # включение/выключение генераии синтетики
+      SYNTHETIC_GENERATOR_ENABLED: "true" # включение/выключение генерации синтетики
     ports:
       - "8081:8080"        # внешний порт 8081, внутренний 8080
     #    depends_on:
